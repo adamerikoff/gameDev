@@ -2,15 +2,15 @@
 
 #include "engine/engine.h"
 
-#define DEBUG
-
 #define WIDTH 800
 #define HEIGHT 600
 
 int main() {
     printf("Starting....\n");
 
-    PhotonForgeEngine* engine = initializeEngine("testing engine", WIDTH, HEIGHT);
+    PhotonForgePlayer* player = initializePlayer(20, 20, 30);
+    PhotonForgeEngine* engine = initializeEngine("testing engine", WIDTH, HEIGHT, player);
+    
 
     loopEngine(engine);
 

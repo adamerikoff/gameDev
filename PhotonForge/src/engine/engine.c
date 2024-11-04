@@ -1,6 +1,6 @@
 #include "engine.h"
 
-PhotonForgeEngine* initializeEngine(const char* title, int width, int height) {
+PhotonForgeEngine* initializeEngine(const char* title, int width, int height, PhotonForgePlayer* player) {
     LOG_DEBUG("Initializing PhotonForgeEngine with title: %s, width: %d, height: %d", title, width, height);
 
     PhotonForgeEngine* engine = (PhotonForgeEngine*)malloc(sizeof(PhotonForgeEngine));
@@ -66,6 +66,12 @@ PhotonForgeEngine* initializeEngine(const char* title, int width, int height) {
 
     SDL_SetRenderDrawBlendMode(engine->renderer, SDL_BLENDMODE_BLEND);
     
+    if (player) {
+        LOG_DEBUG("PhotonForgePlayer is present.");
+        engine->player = player;
+        LOG_DEBUG("PhotonForgePlayer inside PhotonForgeEngine is set.");
+    }
+
     engine->isRunning = true;
     LOG_DEBUG("PhotonForgeEngine initialized successfully. Engine is now running.");
 
@@ -102,6 +108,10 @@ void renderEngine(PhotonForgeEngine* engine) {
     SDL_SetRenderDrawColor(engine->renderer, 0, 0, 0, 255);
     LOG_DEBUG("Render clear.");
     SDL_RenderClear(engine->renderer);
+
+    if (engine->player) {
+        renderPlayer(engine->player, engine->renderer);
+    }
 
     LOG_DEBUG("Render present.");
     SDL_RenderPresent(engine->renderer);

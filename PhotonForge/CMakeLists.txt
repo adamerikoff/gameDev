@@ -19,7 +19,7 @@ include_directories(src/engine)
 include_directories(src/game)
 
 # Add the executable by specifying the output name and the source files
-add_executable(PhotonForge src/main.c src/engine/engine.c)
+add_executable(PhotonForge src/main.c src/engine/engine.c src/engine/player.c)
 
 target_link_libraries(PhotonForge ${SDL2_LIBRARIES})
 

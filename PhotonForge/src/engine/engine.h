@@ -1,12 +1,8 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#ifdef DEBUG
-#define LOG_DEBUG(msg, ...) fprintf(stderr, "DEBUG: " msg "\n", ##__VA_ARGS__)
-#else
-#define LOG_DEBUG(msg, ...)
-#endif
-
+#include "debug.h"
+#include "player.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -21,9 +17,11 @@ typedef struct PhotonForgeEngine{
     char* title;
     int   width;
     int   height;
+
+    PhotonForgePlayer* player;
 } PhotonForgeEngine;
 
-extern PhotonForgeEngine* initializeEngine(const char* title, int width, int height);
+extern PhotonForgeEngine* initializeEngine(const char* title, int width, int height, PhotonForgePlayer* player);
 extern void destroyEngine(PhotonForgeEngine* engine);
 
 extern void renderEngine(PhotonForgeEngine* engine);
