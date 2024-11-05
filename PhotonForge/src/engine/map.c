@@ -108,7 +108,7 @@ void renderMap(PhotonForgeMap* map, SDL_Renderer* renderer) {
             };
 
             SDL_RenderFillRect(renderer, &mapTileRect);
-            LOG_DEBUG("Rendered tile at (%d, %d) with color %d", i, j, tileColor);
+            //LOG_DEBUG("Rendered tile at (%d, %d) with color %d", i, j, tileColor);
         }
     }
 }
@@ -136,4 +136,23 @@ void destroyMap(PhotonForgeMap* map) {
     // Free the PhotonForgeMap structure itself
     free(map);
     LOG_DEBUG("Freed memory for PhotonForgeMap struct.");
+}
+
+bool isWall(PhotonForgeMap* map, int x, int y) {
+    if (map == NULL) {
+        LOG_DEBUG("Map is NULL. Cannot check for wall.");
+        return true;
+    }
+    int indexX = x / TILE_SIZE;
+    int indexY = y / TILE_SIZE;
+    // Check if the provided coordinates are within the map boundaries
+    if (indexX < 0 || indexX >= map->mapWidth || indexY < 0 || indexY >= map->mapHeight) {
+        LOG_DEBUG("Coordinates (%d, %d) are out of bounds. Map size is %d x %d.", x, y, map->mapWidth, map->mapHeight);
+        return true;
+    }
+
+    // Return true if the tile is a wall, false if it is open space
+    bool isWallTile = map->map[indexY][indexX] == 1;
+    LOG_DEBUG("Tile at (%d, %d) is %s.", indexX, indexY, isWallTile ? "WALL" : "OPEN SPACE");
+    return isWallTile;
 }

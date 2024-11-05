@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "constants.h"
+#include "map.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -26,6 +27,8 @@ typedef struct PhotonForgePlayer{
 extern PhotonForgePlayer* initializePlayer(float positionX, float positionY, float width, float height);
 extern void destroyPlayer(PhotonForgePlayer* player);
 extern void renderPlayer(PhotonForgePlayer* player, SDL_Renderer* renderer);
-extern void updatePlayer(PhotonForgePlayer* player, float deltaTime);
+extern void updatePlayer(PhotonForgePlayer* player, PhotonForgeMap* map, float deltaTime);
+extern void movePlayer(PhotonForgePlayer* player, PhotonForgeMap* map, float deltaTime);
+extern void processInputPlayer(PhotonForgePlayer* player, SDL_Event* event);
 
 #endif

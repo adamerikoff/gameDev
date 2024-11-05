@@ -19,5 +19,6 @@ extern PhotonForgeMap* initializeMap(int width, int height);
 extern void generateRoom(PhotonForgeMap* map);
 extern void renderMap(PhotonForgeMap* map, SDL_Renderer* renderer);
 extern void destroyMap(PhotonForgeMap* map);
+extern bool isWall(PhotonForgeMap* map, int x, int y);
 
 #endif

@@ -9,19 +9,20 @@ PhotonForgePlayer* initializePlayer(float positionX, float positionY, float widt
         return NULL;
     }
     LOG_DEBUG("Allocated memory for Player at %p", (void*)player);
-
+    
     player->positionX = positionX;
     player->positionY = positionY;
     player->width = width;
     player->height = height;
+    player->turnDirection = 0;
+    player->walkDirection = 0;
+    player->rotationAngle = PI / 2;
+    player->walkSpeed = 50;
+    player->turnSpeed = 45 * (PI / 180);
 
     LOG_DEBUG("Player initialized successfully with position (%f, %f) and rectangle size w:%f, h:%f", positionX, positionY, width, height);
 
     return player;
-}
-
-void setupPlayer() {
-
 }
 
 void destroyPlayer(PhotonForgePlayer* player) {
@@ -42,14 +43,14 @@ void renderPlayer(PhotonForgePlayer* player, SDL_Renderer* renderer) {
     }
 
     LOG_DEBUG("Rendering player at position (%f, %f) with rectangle size w:%f, h:%f", player->positionX, player->positionY, player->width, player->height);
-
+    LOG_DEBUG("Rendering player at position (%f, %f) with angle %f", player->positionX, player->positionY, player->rotationAngle);
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
     SDL_Rect rect = {
-        .x = player->positionX,
-        .y = player->positionY,
-        .w = player->width,
-        .h = player->height
+        .x = player->positionX * MAP_SCALE_FACTOR,
+        .y = player->positionY * MAP_SCALE_FACTOR,
+        .w = player->width * MAP_SCALE_FACTOR,
+        .h = player->height * MAP_SCALE_FACTOR,
     };
 
     if (SDL_RenderFillRect(renderer, &rect) != 0) {
@@ -58,19 +59,92 @@ void renderPlayer(PhotonForgePlayer* player, SDL_Renderer* renderer) {
         return;
     }
 
+    SDL_RenderDrawLine(
+        renderer,
+        (player->positionX + (player->height / 2)) * MAP_SCALE_FACTOR,
+        (player->positionY + (player->width / 2)) * MAP_SCALE_FACTOR,
+        ((player->positionX + (player->height / 2)) + cos(player->rotationAngle) * 50) * MAP_SCALE_FACTOR,
+        ((player->positionY + (player->width / 2)) + sin(player->rotationAngle) * 50) * MAP_SCALE_FACTOR
+    );
+
     LOG_DEBUG("Player rendered successfully at position (%f, %f)", player->positionX, player->positionY);
+    
 }
 
-void updatePlayer(PhotonForgePlayer* player, float deltaTime) {
+void processInputPlayer(PhotonForgePlayer* player, SDL_Event* event) {
+    switch (event->type) 
+    {
+        case SDL_KEYDOWN:
+            if (event->key.keysym.sym == SDLK_UP) {
+                player->walkDirection = +1;
+            }
+            if (event->key.keysym.sym == SDLK_DOWN) {
+                player->walkDirection = -1;
+            }
+            if (event->key.keysym.sym == SDLK_RIGHT) {
+                player->turnDirection = +1;
+            }
+            if (event->key.keysym.sym == SDLK_LEFT) {
+                player->turnDirection = -1;
+            }
+            if (event->key.keysym.sym == SDLK_LSHIFT) {
+                player->walkSpeed = 100;
+            }
+            break;
+        case SDL_KEYUP:
+            if (event->key.keysym.sym == SDLK_UP) {
+                player->walkDirection = 0;
+            }
+            if (event->key.keysym.sym == SDLK_DOWN) {
+                player->walkDirection = 0;
+            }
+            if (event->key.keysym.sym == SDLK_RIGHT) {
+                player->turnDirection = 0;
+            }
+            if (event->key.keysym.sym == SDLK_LEFT) {
+                player->turnDirection = 0;
+            }
+            if (event->key.keysym.sym == SDLK_LSHIFT) {
+                player->walkSpeed = 50;
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void updatePlayer(PhotonForgePlayer* player, PhotonForgeMap* map, float deltaTime) {
     if (!player) {
         LOG_DEBUG("Attempted to update a NULL Player pointer.");
         return;
     }
+    movePlayer(player, map, deltaTime);
+}
 
+void movePlayer(PhotonForgePlayer* player, PhotonForgeMap* map, float deltaTime) {
     LOG_DEBUG("Updating player position. Current position: (%f, %f), deltaTime: %f", player->positionX, player->positionY, deltaTime);
 
-    player->positionX += 5;
-    player->positionY += 5;
+    // Update the rotation angle based on the current turn direction and speed
+    player->rotationAngle += player->turnDirection * player->turnSpeed * deltaTime;
+    LOG_DEBUG("Updated rotation angle: %f radians", player->rotationAngle);
 
-    LOG_DEBUG("Player position updated to (%f, %f)", player->positionX, player->positionY);
+    // Calculate the step distance based on the walk direction and speed
+    float moveStep = player->walkDirection * player->walkSpeed * deltaTime;
+    LOG_DEBUG("Calculated move step: %f", moveStep);
+
+    // Calculate the new position based on the rotation and movement
+    float newX = player->positionX + cos(player->rotationAngle) * moveStep;
+    float newY = player->positionY + sin(player->rotationAngle) * moveStep;
+    LOG_DEBUG("Calculated new position: (%f, %f)", newX, newY);
+
+    // Check for wall collision at the new position
+    if (!isWall(map, (int)newX, (int)newY)) {
+        // If there is no wall, update the player's position
+        player->positionX = newX;
+        player->positionY = newY;
+        LOG_DEBUG("Player moved to new position: (%f, %f)", player->positionX, player->positionY);
+    } else {
+        // If there is a wall, log the collision event
+        LOG_DEBUG("Collision detected at position (%f, %f). Player position remains at (%f, %f)", newX, newY, player->positionX, player->positionY);
+    }
 }

@@ -151,6 +151,7 @@ void processInputEngine(PhotonForgeEngine* engine) {
         default:
             break;
     }
+    processInputPlayer(engine->player, &event);
 }
 
 void updateEngine(PhotonForgeEngine* engine) {
@@ -174,7 +175,7 @@ void updateEngine(PhotonForgeEngine* engine) {
 
     if (engine->player) {
         LOG_DEBUG("Updating player with delta time: %f", deltaTime);
-        updatePlayer(engine->player, deltaTime);
+        updatePlayer(engine->player, engine->map, deltaTime);
         LOG_DEBUG("Player updated successfully.");
     } else {
         LOG_DEBUG("No player instance found in engine.");
