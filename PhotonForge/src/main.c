@@ -2,14 +2,12 @@
 
 #include "engine/engine.h"
 
-#define WIDTH 800
-#define HEIGHT 600
-
 int main() {
     printf("Starting....\n");
 
-    PhotonForgePlayer* player = initializePlayer(20, 20, 30);
-    PhotonForgeEngine* engine = initializeEngine("testing engine", WIDTH, HEIGHT, player);
+    PhotonForgeMap* map = initializeMap(MAP_COLS, MAP_ROWS);
+    PhotonForgePlayer* player = initializePlayer(20, 20, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
+    PhotonForgeEngine* engine = initializeEngine("testing engine", player, map);
     
 
     loopEngine(engine);

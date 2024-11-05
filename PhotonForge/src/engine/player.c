@@ -1,7 +1,7 @@
 #include "player.h"
 
-PhotonForgePlayer* initializePlayer(int positionX, int positionY, int rectangleSize) {
-    LOG_DEBUG("Initializing Player with position (%d, %d) and rectangle size %d", positionX, positionY, rectangleSize);
+PhotonForgePlayer* initializePlayer(float positionX, float positionY, float width, float height) {
+    LOG_DEBUG("Initializing Player with position (%f, %f) and rectangle size w:%f, h:%f", positionX, positionY, width, height);
 
     PhotonForgePlayer* player = (PhotonForgePlayer*)malloc(sizeof(PhotonForgePlayer));
     if (!player) {
@@ -12,11 +12,16 @@ PhotonForgePlayer* initializePlayer(int positionX, int positionY, int rectangleS
 
     player->positionX = positionX;
     player->positionY = positionY;
-    player->rectangleSize = rectangleSize;
+    player->width = width;
+    player->height = height;
 
-    LOG_DEBUG("Player initialized successfully with position (%d, %d) and size %d", player->positionX, player->positionY, player->rectangleSize);
+    LOG_DEBUG("Player initialized successfully with position (%f, %f) and rectangle size w:%f, h:%f", positionX, positionY, width, height);
 
     return player;
+}
+
+void setupPlayer() {
+
 }
 
 void destroyPlayer(PhotonForgePlayer* player) {
@@ -32,24 +37,40 @@ void destroyPlayer(PhotonForgePlayer* player) {
 void renderPlayer(PhotonForgePlayer* player, SDL_Renderer* renderer) {
     if (!player || !renderer) {
         fprintf(stderr, "Error: Player or renderer is NULL in renderPlayer.\n");
+        LOG_DEBUG("renderPlayer called with NULL parameter(s): player: %p, renderer: %p", (void*)player, (void*)renderer);
         return;
     }
 
-    LOG_DEBUG("Rendering player at position (%d, %d) with size %d", player->positionX, player->positionY, player->rectangleSize);
+    LOG_DEBUG("Rendering player at position (%f, %f) with rectangle size w:%f, h:%f", player->positionX, player->positionY, player->width, player->height);
 
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
     SDL_Rect rect = {
         .x = player->positionX,
         .y = player->positionY,
-        .w = player->rectangleSize,
-        .h = player->rectangleSize
+        .w = player->width,
+        .h = player->height
     };
 
     if (SDL_RenderFillRect(renderer, &rect) != 0) {
         fprintf(stderr, "Error rendering player: %s\n", SDL_GetError());
+        LOG_DEBUG("Failed to render player at position (%f, %f)", player->positionX, player->positionY);
         return;
     }
 
-    LOG_DEBUG("Player rendered successfully at position (%d, %d)", player->positionX, player->positionY);
+    LOG_DEBUG("Player rendered successfully at position (%f, %f)", player->positionX, player->positionY);
+}
+
+void updatePlayer(PhotonForgePlayer* player, float deltaTime) {
+    if (!player) {
+        LOG_DEBUG("Attempted to update a NULL Player pointer.");
+        return;
+    }
+
+    LOG_DEBUG("Updating player position. Current position: (%f, %f), deltaTime: %f", player->positionX, player->positionY, deltaTime);
+
+    player->positionX += 5;
+    player->positionY += 5;
+
+    LOG_DEBUG("Player position updated to (%f, %f)", player->positionX, player->positionY);
 }
