@@ -33,7 +33,7 @@ Engine* initializeEngine(const char* title) {
         return NULL;
     }
     LOG_DEBUG("SDL initialized successfully.");
-
+    
     engine->window = SDL_CreateWindow(
         engine->title, 
         SDL_WINDOWPOS_CENTERED,
@@ -86,7 +86,7 @@ Engine* initializeEngine(const char* title) {
         WINDOW_WIDTH,
         WINDOW_HEIGHT
     );
-    
+
     engine->isRunning = true;
     LOG_DEBUG("Engine initialized successfully. Engine is now running.");
     return engine;
