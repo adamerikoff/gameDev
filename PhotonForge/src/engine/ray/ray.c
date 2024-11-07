@@ -65,19 +65,20 @@ void castRay(Player* player, Ray* ray, Map* map) {
     interceptX = floor(player->positionX / TILE_SIZE) * TILE_SIZE;
     interceptX += isRayRight ? TILE_SIZE : 0;
 
-    interceptY = player->positionY + (interceptX - player->positionX) / tan(ray->rayAngle);
+    interceptY = player->positionY + (interceptX - player->positionX) * tan(ray->rayAngle);
 
     stepX = TILE_SIZE;
     stepX *= isRayLeft ? -1 : 1;
 
-    stepY = TILE_SIZE / tan(ray->rayAngle);
+    stepY = TILE_SIZE * tan(ray->rayAngle);
     stepY *= (isRayUp && stepY > 0) ? -1 : 1;
     stepY *= (isRayDown && stepY < 0) ? -1 : 1;
 
     float nextVerticalTouchX = interceptX;
     float nextVerticalTouchY = interceptY;
 
-    while (nextVerticalTouchX >= 0 && nextVerticalTouchX <= WINDOW_WIDTH && nextVerticalTouchY >= 0 && nextVerticalTouchY <= WINDOW_HEIGHT) {
+    while (nextVerticalTouchX >= 0 && nextVerticalTouchX < WINDOW_WIDTH && 
+       nextVerticalTouchY >= 0 && nextVerticalTouchY < WINDOW_HEIGHT) {
         float toCheckX = nextVerticalTouchX + (isRayLeft ? -1 : 0);
         float toCheckY = nextVerticalTouchY;
 

@@ -59,14 +59,6 @@ void renderPlayer(Player* player, SDL_Renderer* renderer) {
         return;
     }
 
-    SDL_RenderDrawLine(
-        renderer,
-        (player->positionX + (player->height / 2)) * MAP_SCALE_FACTOR,
-        (player->positionY + (player->width / 2)) * MAP_SCALE_FACTOR,
-        ((player->positionX + (player->height / 2)) + cos(player->rotationAngle) * 50) * MAP_SCALE_FACTOR,
-        ((player->positionY + (player->width / 2)) + sin(player->rotationAngle) * 50) * MAP_SCALE_FACTOR
-    );
-
     LOG_DEBUG("Player rendered successfully at position (%f, %f)", player->positionX, player->positionY);
     
 }

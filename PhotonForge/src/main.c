@@ -7,7 +7,7 @@ int main() {
     Ray rays[NUM_RAYS];
 
     Map* map = generateEmptyMap(MAP_ROWS, MAP_COLS);
-    Player* player = initializePlayer(WINDOW_HEIGHT/2, WINDOW_WIDTH/2, TILE_SIZE, TILE_SIZE);
+    Player* player = initializePlayer(WINDOW_HEIGHT/2, WINDOW_WIDTH/2, 5, 5);
     
     Engine* engine = initializeEngine("testing engine");
     engine->player = player;
