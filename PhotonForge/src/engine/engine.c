@@ -264,7 +264,7 @@ void generate3Dprojection(Engine* engine) {
         wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
 
         for (int y = wallTopPixel; y < wallBottomPixel; y++) {
-            engine->colourBuffer[(WINDOW_WIDTH * y) + i] = 0xFFFFFFFF;
+            engine->colourBuffer[(WINDOW_WIDTH * y) + i] = engine->rays[i].wasHitVertical ? 0xFFFFFFFF : 0xFFCCCCCC;
         }
         
     }
