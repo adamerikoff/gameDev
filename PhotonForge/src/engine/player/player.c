@@ -1,9 +1,9 @@
 #include "player.h"
 
-PhotonForgePlayer* initializePlayer(float positionX, float positionY, float width, float height) {
+Player* initializePlayer(float positionX, float positionY, float width, float height) {
     LOG_DEBUG("Initializing Player with position (%f, %f) and rectangle size w:%f, h:%f", positionX, positionY, width, height);
 
-    PhotonForgePlayer* player = (PhotonForgePlayer*)malloc(sizeof(PhotonForgePlayer));
+    Player* player = (Player*)malloc(sizeof(Player));
     if (!player) {
         fprintf(stderr, "Error allocating memory for Player struct.\n");
         return NULL;
@@ -25,7 +25,7 @@ PhotonForgePlayer* initializePlayer(float positionX, float positionY, float widt
     return player;
 }
 
-void destroyPlayer(PhotonForgePlayer* player) {
+void destroyPlayer(Player* player) {
     if (!player) {
         LOG_DEBUG("Attempted to destroy a NULL Player pointer.");
         return;
@@ -35,7 +35,7 @@ void destroyPlayer(PhotonForgePlayer* player) {
     LOG_DEBUG("Player memory freed.");
 }
 
-void renderPlayer(PhotonForgePlayer* player, SDL_Renderer* renderer) {
+void renderPlayer(Player* player, SDL_Renderer* renderer) {
     if (!player || !renderer) {
         fprintf(stderr, "Error: Player or renderer is NULL in renderPlayer.\n");
         LOG_DEBUG("renderPlayer called with NULL parameter(s): player: %p, renderer: %p", (void*)player, (void*)renderer);
@@ -71,7 +71,7 @@ void renderPlayer(PhotonForgePlayer* player, SDL_Renderer* renderer) {
     
 }
 
-void processInputPlayer(PhotonForgePlayer* player, SDL_Event* event) {
+void processInputPlayer(Player* player, SDL_Event* event) {
     switch (event->type) 
     {
         case SDL_KEYDOWN:
@@ -113,7 +113,7 @@ void processInputPlayer(PhotonForgePlayer* player, SDL_Event* event) {
     }
 }
 
-void updatePlayer(PhotonForgePlayer* player, PhotonForgeMap* map, float deltaTime) {
+void updatePlayer(Player* player, Map* map, float deltaTime) {
     if (!player) {
         LOG_DEBUG("Attempted to update a NULL Player pointer.");
         return;
@@ -121,7 +121,7 @@ void updatePlayer(PhotonForgePlayer* player, PhotonForgeMap* map, float deltaTim
     movePlayer(player, map, deltaTime);
 }
 
-void movePlayer(PhotonForgePlayer* player, PhotonForgeMap* map, float deltaTime) {
+void movePlayer(Player* player, Map* map, float deltaTime) {
     LOG_DEBUG("Updating player position. Current position: (%f, %f), deltaTime: %f", player->positionX, player->positionY, deltaTime);
 
     // Update the rotation angle based on the current turn direction and speed

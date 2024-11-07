@@ -1,19 +1,19 @@
 #include "engine.h"
 
-PhotonForgeEngine* initializeEngine(const char* title, PhotonForgePlayer* player, PhotonForgeMap* map) {
-    LOG_DEBUG("Initializing PhotonForgeEngine with title: %s, width: %d, height: %d", title, WINDOW_WIDTH, WINDOW_HEIGHT);
+Engine* initializeEngine(const char* title) {
+    LOG_DEBUG("Initializing Engine with title: %s, width: %d, height: %d", title, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    PhotonForgeEngine* engine = (PhotonForgeEngine*)malloc(sizeof(PhotonForgeEngine));
+    Engine* engine = (Engine*)malloc(sizeof(Engine));
     if (!engine) {
-        fprintf(stderr, "Error allocating memory for PhotonForgeEngine.\n");
+        fprintf(stderr, "Error allocating memory for Engine.\n");
         return NULL;
     }
-    LOG_DEBUG("Allocated memory for PhotonForgeEngine at %p", (void*)engine);
+    LOG_DEBUG("Allocated memory for Engine at %p", (void*)engine);
 
     engine->title = strdup(title);
     if (!engine->title) {
         fprintf(stderr, "Error allocating memory for engine title.\n");
-        LOG_DEBUG("Freeing allocated memory for PhotonForgeEngine due to title allocation failure.");
+        LOG_DEBUG("Freeing allocated memory for Engine due to title allocation failure.");
         free(engine);
         return NULL;
     }
@@ -27,7 +27,7 @@ PhotonForgeEngine* initializeEngine(const char* title, PhotonForgePlayer* player
     LOG_DEBUG("SDL initialization started.");
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         fprintf(stderr, "Error initializing SDL: %s\n", SDL_GetError());
-        LOG_DEBUG("Freeing engine title and PhotonForgeEngine due to SDL initialization failure.");
+        LOG_DEBUG("Freeing engine title and Engine due to SDL initialization failure.");
         free(engine->title);
         free(engine);
         return NULL;
@@ -45,7 +45,7 @@ PhotonForgeEngine* initializeEngine(const char* title, PhotonForgePlayer* player
 
     if (!engine->window) {
         fprintf(stderr, "Error creating SDL window: %s\n", SDL_GetError());
-        LOG_DEBUG("Freeing engine title and PhotonForgeEngine due to window creation failure.");
+        LOG_DEBUG("Freeing engine title and Engine due to window creation failure.");
         SDL_Quit();
         free(engine->title);
         free(engine);
@@ -56,7 +56,7 @@ PhotonForgeEngine* initializeEngine(const char* title, PhotonForgePlayer* player
     engine->renderer = SDL_CreateRenderer(engine->window, -1, 0);
     if (!engine->renderer) {
         fprintf(stderr, "Error creating SDL renderer: %s\n", SDL_GetError());
-        LOG_DEBUG("Freeing engine title and PhotonForgeEngine due to renderer creation failure.");
+        LOG_DEBUG("Freeing engine title and Engine due to renderer creation failure.");
         SDL_DestroyWindow(engine->window);
         SDL_Quit();
         free(engine->title);
@@ -67,27 +67,15 @@ PhotonForgeEngine* initializeEngine(const char* title, PhotonForgePlayer* player
 
     SDL_SetRenderDrawBlendMode(engine->renderer, SDL_BLENDMODE_BLEND);
     
-    if (player) {
-        LOG_DEBUG("Player is present.");
-        engine->player = player;
-        LOG_DEBUG("Player inside Engine is set.");
-    }
-
-    if (map) {
-        LOG_DEBUG("Map is present.");
-        engine->map = map;
-        LOG_DEBUG("Map inside Engine is set.");
-    }
-
     engine->isRunning = true;
-    LOG_DEBUG("PhotonForgeEngine initialized successfully. Engine is now running.");
+    LOG_DEBUG("Engine initialized successfully. Engine is now running.");
 
     return engine;
 }
 
-void destroyEngine(PhotonForgeEngine* engine) {
+void destroyEngine(Engine* engine) {
     if (engine) {
-        LOG_DEBUG("Destroying PhotonForgeEngine at %p.", (void*)engine);
+        LOG_DEBUG("Destroying Engine at %p.", (void*)engine);
         if (engine->renderer) {
             SDL_DestroyRenderer(engine->renderer);
             LOG_DEBUG("SDL renderer destroyed.");
@@ -102,28 +90,20 @@ void destroyEngine(PhotonForgeEngine* engine) {
         } else {
             LOG_DEBUG("Engine title is NULL, nothing to free.");
         }
-        if (engine->map) {
-            destroyMap(engine->map);
-            LOG_DEBUG("Map destroyed.");
-        }
-        if (engine->player) {
-            destroyPlayer(engine->player);
-            LOG_DEBUG("Player destroyed.");
-        }
         free(engine);
-        LOG_DEBUG("PhotonForgeEngine structure freed.");
+        LOG_DEBUG("Engine structure freed.");
     } else {
         LOG_DEBUG("Attempted to destroy a NULL engine.");
     }
 }
 
-void renderEngine(PhotonForgeEngine* engine) {
+void renderEngine(Engine* engine) {
     LOG_DEBUG("Rendering started...");
     LOG_DEBUG("Drawing color.");
     SDL_SetRenderDrawColor(engine->renderer, 0, 0, 0, 255);
-    LOG_DEBUG("Render clear.");
     SDL_RenderClear(engine->renderer);
-
+    LOG_DEBUG("Render cleared.");
+    
     if (engine->map) {
         renderMap(engine->map, engine->renderer);
     }
@@ -131,11 +111,11 @@ void renderEngine(PhotonForgeEngine* engine) {
         renderPlayer(engine->player, engine->renderer);
     }
 
-    LOG_DEBUG("Render present.");
     SDL_RenderPresent(engine->renderer);
+    LOG_DEBUG("Render presented.");
 }
 
-void processInputEngine(PhotonForgeEngine* engine) {
+void processInputEngine(Engine* engine) {
     SDL_Event event;
     SDL_PollEvent(&event);
     switch (event.type)
@@ -154,13 +134,13 @@ void processInputEngine(PhotonForgeEngine* engine) {
     processInputPlayer(engine->player, &event);
 }
 
-void updateEngine(PhotonForgeEngine* engine) {
+void updateEngine(Engine* engine) {
     LOG_DEBUG("Engine update started.");
-
+    
     LOG_DEBUG("Calculating frame time to wait.");
     int timeToWait = FRAME_TIME_LENGTH - (SDL_GetTicks() - engine->ticksLastTime);
-    LOG_DEBUG("Time to wait: %d ms", timeToWait);
 
+    LOG_DEBUG("Time to wait: %d ms", timeToWait);
     if (timeToWait > 0 && timeToWait <= FRAME_TIME_LENGTH) {
         LOG_DEBUG("Delaying frame by %d ms to match frame rate.", timeToWait);
         SDL_Delay(timeToWait);
@@ -172,36 +152,22 @@ void updateEngine(PhotonForgeEngine* engine) {
     LOG_DEBUG("Delta time for this frame: %f seconds", deltaTime);
     engine->ticksLastTime = SDL_GetTicks();
     LOG_DEBUG("Updated engine ticksLastTime to %u", engine->ticksLastTime);
-
+    
     if (engine->player) {
-        LOG_DEBUG("Updating player with delta time: %f", deltaTime);
         updatePlayer(engine->player, engine->map, deltaTime);
-        LOG_DEBUG("Player updated successfully.");
-    } else {
-        LOG_DEBUG("No player instance found in engine.");
     }
 
     LOG_DEBUG("Engine update finished.");
 }
 
-
-void setupEngine(PhotonForgeEngine* engine) {
-    LOG_DEBUG("Setting up engine.");
-    // Setup code here...
-}
-
-void loopEngine(PhotonForgeEngine* engine) {
+void loopEngine(Engine* engine) {
     LOG_DEBUG("Entering main loop.");
-    
-    setupEngine(engine);
-
     while(engine->isRunning) {
         // Main loop logic...
         processInputEngine(engine);
         updateEngine(engine);
         renderEngine(engine);
     }
-
     LOG_DEBUG("Exiting main loop.");
     destroyEngine(engine);
 }

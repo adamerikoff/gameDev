@@ -4,14 +4,12 @@
 
 int main() {
     printf("Starting....\n");
-
-    PhotonForgeMap* map = initializeMap(MAP_COLS, MAP_ROWS);
-    PhotonForgePlayer* player = initializePlayer(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 20, 20);
-    PhotonForgeEngine* engine = initializeEngine("testing engine", player, map);
-    
-
-    loopEngine(engine);
-
+    Map* map = generateEmptyMap(MAP_ROWS, MAP_COLS);
+    Player* player = initializePlayer(WINDOW_HEIGHT/2, WINDOW_WIDTH/2, TILE_SIZE, TILE_SIZE);
+    Engine* engine = initializeEngine("testing engine");
+    engine->player = player;
+    engine->map = map;
+    loopEngine(engine);    
     printf("Exiting....\n");
     return 0;
 }
