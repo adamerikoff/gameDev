@@ -16,7 +16,7 @@ Player* initializePlayer(float positionX, float positionY, float width, float he
     player->height = height;
     player->turnDirection = 0;
     player->walkDirection = 0;
-    player->rotationAngle = PI / 2;
+    player->rotationAngle = - PI / 2;
     player->walkSpeed = 50;
     player->turnSpeed = 45 * (PI / 180);
 

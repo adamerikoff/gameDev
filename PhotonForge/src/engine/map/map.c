@@ -49,6 +49,50 @@ Map* generateEmptyMap(const unsigned int rows, const unsigned int columns) {
     return map;
 }
 
+// Function to generate a circular room in the middle of the map
+Map* generateCircularRoomMap(const unsigned int rows, const unsigned int columns, const unsigned int radius) {
+    Map* map = generateEmptyMap(rows, columns);
+    if (!map) return NULL;
+
+    unsigned int centerX = rows / 2;
+    unsigned int centerY = columns / 2;
+
+    // Create the circular room
+    for (unsigned int i = 1; i < rows - 1; i++) {
+        for (unsigned int j = 1; j < columns - 1; j++) {
+            // Check if the point (i, j) lies within the circle using the circle equation
+            if (pow(i - centerX, 2) + pow(j - centerY, 2) <= pow(radius, 2)) {
+                map->array[i][j] = 1; // Inside the circle, make it a wall
+            }
+        }
+    }
+
+    LOG_DEBUG("Circular room generated successfully.\n");
+    return map;
+}
+
+// Function to generate a room with columns (pillars inside the room)
+Map* generateRoomWithColumns(const unsigned int rows, const unsigned int columns, const unsigned int numColumns) {
+    Map* map = generateEmptyMap(rows, columns);
+    if (!map) return NULL;
+
+    unsigned int roomStartX = 1;
+    unsigned int roomEndX = rows - 2;
+    unsigned int roomStartY = 1;
+    unsigned int roomEndY = columns - 2;
+
+    // Randomly place columns inside the room
+    for (unsigned int n = 0; n < numColumns; n++) {
+        unsigned int columnX = rand() % (roomEndX - roomStartX + 1) + roomStartX;
+        unsigned int columnY = rand() % (roomEndY - roomStartY + 1) + roomStartY;
+
+        map->array[columnX][columnY] = 1; // Place a column (wall) at a random location inside the room
+    }
+
+    LOG_DEBUG("Room with columns generated successfully.\n");
+    return map;
+}
+
 void renderMap(const Map* map, SDL_Renderer* renderer) {
     if (!map || !map->array) {
         fprintf(stderr, "Map or map data is NULL. Cannot render map.\n");
@@ -114,7 +158,7 @@ bool isWall(Map* map, int x, int y) {
     int indexX = x / TILE_SIZE;
     int indexY = y / TILE_SIZE;
     // Check if the provided coordinates are within the map boundaries
-    if (indexX < 0 || indexX >= map->columns || indexY < 0 || indexY >= map->rows) {
+    if (indexX < 0 || indexX > map->columns || indexY < 0 || indexY > map->rows) {
         LOG_DEBUG("Coordinates (%d, %d) are out of bounds. Map size is %d x %d.", x, y, map->columns, map->rows);
         return true;
     }

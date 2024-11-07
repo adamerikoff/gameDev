@@ -24,11 +24,17 @@ typedef struct Engine{
     Map* map;
     Player* player;
     Ray* rays;
+
+    Uint32* colourBuffer;
+    SDL_Texture* colourBufferTexture;
 } Engine;
 
 extern Engine* initializeEngine(const char* title);
 extern void destroyEngine(Engine* engine);
 
+extern void generate3Dprojection(Engine* engine);
+extern void renderColourBuffer(Engine* engine);
+extern void clearColourBuffer(Engine* engine, Uint32 colour);
 extern void renderEngine(Engine* engine);
 extern void updateEngine(Engine* engine);
 
