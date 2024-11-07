@@ -16,7 +16,7 @@ make
 
 # Run the executable if the build was successful
 if [ $? -eq 0 ]; then
-  ./app
+  ./2DGameEngine
 else
   echo "Build failed."
 fi
