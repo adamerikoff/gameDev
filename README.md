@@ -1,5 +1,11 @@
 # Raycasting Engine in C with SDL
 
+## Preview
+
+Here's a preview of the raycasting engine in action:
+
+![Raycasting Engine Preview](preview.png)
+
 This is a simple raycasting engine written in C using the SDL2 library. The engine simulates a first-person perspective, where the player can navigate through a 2D map and see walls and environments rendered in 3D. The implementation is based on raycasting principles, commonly used in early 3D games like *Wolfenstein 3D*.
 
 ## Features
@@ -47,9 +53,3 @@ sudo apt-get install libsdl2-image-dev
 
 - Use arrow keys to move the player.
 - Press `ESC` to exit the game.
-
-## Preview
-
-Here's a preview of the raycasting engine in action:
-
-![Raycasting Engine Preview](preview.png)
