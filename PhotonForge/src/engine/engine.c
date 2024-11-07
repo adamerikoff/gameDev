@@ -86,7 +86,7 @@ Engine* initializeEngine(const char* title) {
         WINDOW_WIDTH,
         WINDOW_HEIGHT
     );
-
+    
     engine->isRunning = true;
     LOG_DEBUG("Engine initialized successfully. Engine is now running.");
     return engine;
