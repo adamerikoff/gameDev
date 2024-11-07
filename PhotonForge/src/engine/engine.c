@@ -110,7 +110,9 @@ void renderEngine(Engine* engine) {
     if (engine->player) {
         renderPlayer(engine->player, engine->renderer);
     }
-
+    if (engine->rays) {
+        renderRays(engine->player, engine->rays, engine->renderer);
+    }
     SDL_RenderPresent(engine->renderer);
     LOG_DEBUG("Render presented.");
 }
@@ -156,7 +158,9 @@ void updateEngine(Engine* engine) {
     if (engine->player) {
         updatePlayer(engine->player, engine->map, deltaTime);
     }
-
+    if (engine->rays) {
+        castAllRays(engine->player, engine->rays, engine->map);
+    }
     LOG_DEBUG("Engine update finished.");
 }
 

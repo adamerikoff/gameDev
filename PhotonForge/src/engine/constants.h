@@ -18,7 +18,9 @@
 
 #define MAP_ROWS (WINDOW_HEIGHT / TILE_SIZE)
 #define MAP_COLS (WINDOW_WIDTH / TILE_SIZE)
-#define MAP_SCALE_FACTOR 0.3
+#define MAP_SCALE_FACTOR 0.5
+
+#define INT_MAX 2147483647
 
 #include "debug.h"
 #include <stdio.h>

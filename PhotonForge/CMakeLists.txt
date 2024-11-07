@@ -25,6 +25,7 @@ add_executable(
     src/engine/engine.c
     src/engine/map/map.c
     src/engine/player/player.c
+    src/engine/ray/ray.c
 )
 
 target_link_libraries(PhotonForge ${SDL2_LIBRARIES})

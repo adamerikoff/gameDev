@@ -23,6 +23,7 @@ typedef struct Engine{
 
     Map* map;
     Player* player;
+    Ray* rays;
 } Engine;
 
 extern Engine* initializeEngine(const char* title);
