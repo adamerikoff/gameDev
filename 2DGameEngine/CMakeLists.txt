@@ -21,6 +21,7 @@ include_directories(src/engine)
 add_executable(
     2DGameEngine 
     src/main.cpp
+    src/engine/Game.cpp
 )
 
 target_link_libraries(2DGameEngine ${SDL2_LIBRARIES})
