@@ -1,7 +1,8 @@
-.vscode/
+.vscode
 
 RayCastingEngine/build/
 3DEngine/build/
 2DGameEngine/build/
 *.o
 *.nes
+build
