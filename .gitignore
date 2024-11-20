@@ -6,3 +6,4 @@ RayCastingEngine/build/
 *.o
 *.nes
 build
+.DS_Store
