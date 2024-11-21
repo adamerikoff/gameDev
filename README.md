@@ -6,7 +6,7 @@ This repository contains several game development projects, each focusing on dif
 |---|---|
 | [2DGameEngine](2DGameEngine) | A 2D game engine built from scratch. |
 | [3DEngine](3DEngine) | A 3D game engine under development. |
-| [NES6502Assembly](NES6502Assembly) | A collection of NES 6502 assembly game. |
+| [luaCintegration](luaCintegration) | Lua and C integration project for rectangle movement control. |
 | [RayCastingEngine](RayCastingEngine) | A simple raycasting engine for creating 3D worlds in 2D. |
 
 
