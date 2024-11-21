@@ -33,6 +33,8 @@ void update(void);
 void render(void);
 void destroy_window(void);
 
+int set_player_position(lua_State* L);
+
 int main(int argc, char* argve[]) {
     L = luaL_newstate();
     luaL_openlibs(L);
@@ -40,6 +42,8 @@ int main(int argc, char* argve[]) {
         luaL_error(L, "Error reading player_movement.lua: %s\n", lua_tostring(L, -1));
         return EXIT_FAILURE;
     }
+    lua_pushcfunction(L, set_player_position);
+    lua_setglobal(L, "set_player_position");
 
     is_running = initialize_window();
     
@@ -123,7 +127,8 @@ void update(void) {
 
     lua_getglobal(L, "update");
     if (lua_isfunction(L, -1)) {
-        const int NUM_ARGS    = 0;
+        lua_pushnumber(L, delta_time);
+        const int NUM_ARGS    = 1;
         const int NUM_RETURNS = 0;
         lua_pcall(L, NUM_ARGS, NUM_RETURNS, 0);
     }
@@ -149,4 +154,14 @@ void destroy_window(void) {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+}
+
+int set_player_position(lua_State* L) {
+    lua_Number x = lua_tonumber(L, -2);
+    lua_Number y = lua_tonumber(L, -1);
+
+    player.x = (int)x;
+    player.y = (int)y;
+
+    return 0;
 }
