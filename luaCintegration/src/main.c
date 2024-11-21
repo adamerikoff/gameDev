@@ -16,13 +16,15 @@ typedef struct {
     float height;
 } Player;
 
-Player player;
-
-SDL_Window* window = nullptr;
+SDL_Window* window     = nullptr;
 SDL_Renderer* renderer = nullptr;
 
-bool is_running = false;
-int last_frame_time;
+bool is_running     = false;
+int last_frame_time = 0;
+
+lua_State* L;
+
+Player player;
 
 bool initialize_window(void);
 void setup(void);
@@ -32,6 +34,13 @@ void render(void);
 void destroy_window(void);
 
 int main(int argc, char* argve[]) {
+    L = luaL_newstate();
+    luaL_openlibs(L);
+    if (luaL_dofile(L, "./scripts/player_movement.lua") != LUA_OK) {
+        luaL_error(L, "Error reading player_movement.lua: %s\n", lua_tostring(L, -1));
+        return EXIT_FAILURE;
+    }
+
     is_running = initialize_window();
     
     setup();
@@ -77,9 +86,9 @@ bool initialize_window(void) {
 }
 
 void setup(void) {
-    player.x = 20;
-    player.y = 20;
-    player.width = 10;
+    player.x      = 20;
+    player.y      = 20;
+    player.width  = 10;
     player.height = 10;
 }
 
@@ -110,11 +119,14 @@ void update(void) {
         SDL_Delay(time_to_wait);
     }
     float delta_time = (SDL_GetTicks() - last_frame_time) / 1000.0f;
-    last_frame_time = SDL_GetTicks();
+    last_frame_time  = SDL_GetTicks();
 
-
-    player.x += 100 * delta_time;
-    player.y += 100 * delta_time;
+    lua_getglobal(L, "update");
+    if (lua_isfunction(L, -1)) {
+        const int NUM_ARGS    = 0;
+        const int NUM_RETURNS = 0;
+        lua_pcall(L, NUM_ARGS, NUM_RETURNS, 0);
+    }
 }
 
 void render(void) {
