@@ -1,4 +1,4 @@
-**# Game Development Projects**
+# Game Development Projects
 
 This repository contains several game development projects, each focusing on different aspects of game engine development.
 
@@ -9,6 +9,9 @@ This repository contains several game development projects, each focusing on dif
 | [luaCintegration](luaCintegration) | Lua and C integration project for rectangle movement control. |
 | [RayCastingEngine](RayCastingEngine) | A simple raycasting engine for creating 3D worlds in 2D. |
 
+----
 
-**Resources**
+## Resources
 [Gustavo Pezzi](https://pikuma.com/)
+
+----
