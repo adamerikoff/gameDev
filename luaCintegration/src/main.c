@@ -6,6 +6,8 @@
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
+#define FPS 30
+#define FRAM_TIME_LENGTH (1000 / FPS)
 
 typedef struct {
     float x;
@@ -20,6 +22,7 @@ SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 
 bool is_running = false;
+int last_frame_time;
 
 bool initialize_window(void);
 void setup(void);
@@ -101,7 +104,17 @@ void process_input(void) {
 }
 
 void update(void) {
+    int current_time = SDL_GetTicks();
+    if (!SDL_TICKS_PASSED(current_time, last_frame_time + FRAM_TIME_LENGTH)) {
+        int time_to_wait = (last_frame_time + FRAM_TIME_LENGTH) - current_time;
+        SDL_Delay(time_to_wait);
+    }
+    float delta_time = (SDL_GetTicks() - last_frame_time) / 1000.0f;
+    last_frame_time = SDL_GetTicks();
 
+
+    player.x += 100 * delta_time;
+    player.y += 100 * delta_time;
 }
 
 void render(void) {
@@ -109,7 +122,12 @@ void render(void) {
     SDL_RenderClear(renderer);
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_Rect player_rect = { player.x, player.y, player.width, player.height };
+    SDL_Rect player_rect = {
+        (int)player.x, 
+        (int)player.y, 
+        (int)player.width, 
+        (int)player.height
+    };
     SDL_RenderFillRect(renderer, &player_rect);
 
     SDL_RenderPresent(renderer);
